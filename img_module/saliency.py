@@ -1,13 +1,13 @@
 import torch
 
-from u2net import u2net, u2netp
+from .u2net import U2NET, U2NETP
 from pathlib2 import Path
 from torchvision import transforms
-from utils.tensor_operation import normalization_by_range
+from .utils.tensor_operation import normalization_by_range
 
 NETS = {
-    'u2net': (u2net, Path('./weights/u2net/u2net.pth')),
-    'u2netp': (u2netp, Path('./weights/u2net/u2netp.pth'))
+    'u2net': (U2NET, Path('./weights/u2net/u2net.pth')),
+    'u2netp': (U2NETP, Path('./weights/u2net/u2netp.pth'))
 }
 
 IMGNET_MEAN_RGB = (0.485, 0.456, 0.406)
@@ -32,6 +32,9 @@ class SaliencyObjDetect:
             transforms.ToTensor(),
             transforms.Normalize(IMGNET_MEAN_RGB, IMGNET_STD_RGB)
         ])
+
+    def get_saliency_mask(self, img):
+        pass
 
     def detect_saliency(self, img):
         with torch.no_grad():

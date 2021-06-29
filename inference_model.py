@@ -1,1 +1,0 @@
-import img_module.inference_model
