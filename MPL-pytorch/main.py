@@ -19,7 +19,7 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from data import DATASET_GETTERS
-from models import WideResNet, ModelEMA
+from models import ModelEMA
 from utils import (AverageMeter, accuracy, create_loss_fn, save_checkpoint,
                    reduce_tensor, model_load_state_dict)
 
@@ -38,12 +38,8 @@ parser.add_argument('--save-path',
 parser.add_argument('--dataset',
                     default='cifar10',
                     type=str,
-                    choices=['cifar10', 'cifar100'],
+                    choices=['cifar10', 'cifar100', 'hbs'],
                     help='dataset name')
-parser.add_argument('--num-labeled',
-                    type=int,
-                    default=4000,
-                    help='number of labeled data')
 parser.add_argument("--expand-labels",
                     action="store_true",
                     help="expand labels to fit eval steps")
@@ -64,7 +60,7 @@ parser.add_argument('--num-classes',
                     default=10,
                     type=int,
                     help='number of classes')
-parser.add_argument('--resize', default=32, type=int, help='resize image')
+parser.add_argument('--resize', default=224, type=int, help='resize image')
 parser.add_argument('--batch-size',
                     default=64,
                     type=int,
@@ -215,7 +211,7 @@ def train_loop(args, labeled_loader, unlabeled_loader, test_loader,
                t_optimizer, s_optimizer, t_scheduler, s_scheduler, t_scaler,
                s_scaler):
     logger.info("***** Running Training *****")
-    logger.info(f"   Task = {args.dataset}@{args.num_labeled}")
+    logger.info(f"   Task = {args.dataset}")
     logger.info(f"   Total steps = {args.total_steps}")
 
     if args.world_size > 1:
@@ -615,20 +611,15 @@ def main():
                              batch_size=args.batch_size,
                              num_workers=args.workers)
 
-    if args.dataset == "cifar10":
-        depth, widen_factor = 28, 2
-    elif args.dataset == 'cifar100':
-        depth, widen_factor = 28, 8
-
     if args.local_rank not in [-1, 0]:
         torch.distributed.barrier()
 
-    teacher_model = timm.create_model('efficientnet_b1',
+    teacher_model = timm.create_model('efficientnet_b0',
                                       pretrained=True,
-                                      num_classes=10)
-    student_model = timm.create_model('efficientnet_b1',
+                                      num_classes=args.num_classes)
+    student_model = timm.create_model('efficientnet_b0',
                                       pretrained=True,
-                                      num_classes=10)
+                                      num_classes=args.num_classes)
     """
     teacher_model = WideResNet(num_classes=args.num_classes,
                                depth=depth,
