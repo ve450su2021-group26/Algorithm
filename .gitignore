@@ -7,6 +7,7 @@
 /text_processing_module/BERT-basic/__pycache__
 /MPL-pytorch/HBSLabeled
 /MPL-pytorch/HBSUnlabeled
+/MPL-pytorch/results/
 .vscode
 *.npz
 *.jpg

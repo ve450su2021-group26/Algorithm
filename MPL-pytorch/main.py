@@ -60,7 +60,7 @@ parser.add_argument('--num-classes',
                     default=10,
                     type=int,
                     help='number of classes')
-parser.add_argument('--resize', default=224, type=int, help='resize image')
+parser.add_argument('--resize', default=156, type=int, help='resize image')
 parser.add_argument('--batch-size',
                     default=64,
                     type=int,

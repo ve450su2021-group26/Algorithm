@@ -42,7 +42,7 @@ class HBSLabeled(Dataset):
         label_info = self.labels.iloc[index, :]
         img_path = self.img_dir / label_info['img_file_name']
         label = label_info['label']
-        img = Image.open(str(img_path))
+        img = Image.open(str(img_path)).convert('RGB')
         return self.transform(img), label
 
     def __len__(self):
@@ -59,7 +59,7 @@ class HBSUnlabeled(Dataset):
     def __getitem__(self, index):
         # read i-th row of a panda dataframe
         img_path = self.img_paths[index]
-        img = Image.open(str(img_path))
+        img = Image.open(str(img_path)).convert('RGB')
         return self.transform(img), -1
 
     def __len__(self):
@@ -68,6 +68,7 @@ class HBSUnlabeled(Dataset):
 
 def get_hbs(args):
     transform_labeled = transforms.Compose([
+        transforms.Resize((196, 196)),
         transforms.RandomHorizontalFlip(),
         transforms.RandomCrop(size=args.resize,
                               padding=int(args.resize * 0.125),
@@ -76,15 +77,16 @@ def get_hbs(args):
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
     transform_val = transforms.Compose([
-        transforms.Resize((224, 224)),
+        transforms.Resize(args.resize),
         transforms.ToTensor(),
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
     transform_MPL = TransformMPL(args, mean=IMAGENET_MEAN, std=IMAGENET_STD)
-    labeled_dataset = HBSLabeled('/home/bz/Algorithm/MPL-pytorch/HBSLabeled')
+    labeled_dataset = HBSLabeled('/home/amax/Algorithm/MPL-pytorch/HBSLabeled')
     train_unlabeled_dataset = HBSUnlabeled(
-        '/home/bz/Algorithm/MPL-pytorch/HBSUnlabeled', transform_MPL)
+        '/home/amax/Algorithm/MPL-pytorch/HBSUnlabeled', transform_MPL)
     len_labled = len(labeled_dataset)
+    del labeled_dataset
     len_train_labeled = int(len_labled * 0.95)
     np.random.seed(args.seed)
     idx = np.random.permutation(len_labled)
@@ -92,9 +94,9 @@ def get_hbs(args):
     val_labeled_idxs = idx[len_train_labeled:]
 
     train_labeled_dataset = HBSLabeled(
-        '/home/bz/Algorithm/MPL-pytorch/HBSLabeled', train_labeled_idxs,
+        '/home/amax/Algorithm/MPL-pytorch/HBSLabeled', train_labeled_idxs,
         transform_labeled)
-    test_dataset = HBSLabeled('/home/bz/Algorithm/MPL-pytorch/HBSLabeled',
+    test_dataset = HBSLabeled('/home/amax/Algorithm/MPL-pytorch/HBSLabeled',
                               val_labeled_idxs, transform_val)
 
     return train_labeled_dataset, train_unlabeled_dataset, test_dataset
@@ -235,12 +237,14 @@ class TransformMPL(object):
             n, m = 2, 10  # default
 
         self.ori = transforms.Compose([
+            transforms.Resize((196, 196)),
             transforms.RandomHorizontalFlip(),
             transforms.RandomCrop(size=args.resize,
                                   padding=int(args.resize * 0.125),
                                   padding_mode='reflect')
         ])
         self.aug = transforms.Compose([
+            transforms.Resize((196, 196)),
             transforms.RandomHorizontalFlip(),
             transforms.RandomCrop(size=args.resize,
                                   padding=int(args.resize * 0.125),
