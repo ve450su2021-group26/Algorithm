@@ -20,8 +20,6 @@ def load_tsv_dataset(filename, set_type):
     examples = []
     lines = read_tsv(filename)
     for (i, line) in enumerate(lines):
-        if i == 0:
-            continue
         guid = i
         text_a = line[0]
         label = line[1]
@@ -40,11 +38,11 @@ def load_data(data_dir, tokenizer, max_length, batch_size, data_type, label_list
     elif data_type == "dev":
         dev_file = os.path.join(data_dir, 'dev.tsv').replace('\\','/')
         examples = load_func(dev_file, data_type)
-    elif data_type == "test":
+    elif data_type == "test" or data_type == "test_verbose":
         test_file = os.path.join(data_dir, 'test.tsv').replace('\\','/')
         examples = load_func(test_file, data_type)
     else:
-        raise RuntimeError("should be train or dev or test")
+        raise RuntimeError("should be train or dev or test or test verbose")
 
     features = convert_examples_to_features(
         examples, label_list, max_length, tokenizer)
@@ -53,5 +51,5 @@ def load_data(data_dir, tokenizer, max_length, batch_size, data_type, label_list
 
     examples_len = len(examples)
 
-    return dataloader, examples_len
+    return dataloader, examples
 

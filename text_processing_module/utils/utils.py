@@ -149,8 +149,10 @@ def convert_features_to_tensors(features, batch_size, data_type):
                          all_segment_ids, all_label_ids)
 
     sampler = RandomSampler(data)
-    if data_type == "test":
-        dataloader = DataLoader(data, sampler=sampler, batch_size=batch_size)
+    if data_type == "test_verbose":
+        dataloader = DataLoader(data, shuffle=False, batch_size=batch_size)
+    elif data_type == "test":
+        dataloader = DataLoader(data, sampler=sampler, batch_size=batch_size)        
     else:
         dataloader = DataLoader(data, sampler=sampler,
                                 batch_size=batch_size, drop_last=True)

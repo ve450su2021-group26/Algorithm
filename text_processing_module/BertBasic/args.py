@@ -79,6 +79,11 @@ def get_args(data_dir, output_dir, cache_dir, bert_vocab_file, bert_model_dir, l
                         action='store_true',
                         help="Whether to run training.")
 
+
+    parser.add_argument("--do_test_verbose",
+                        action='store_true',
+                        help="Whether to run testing in verbose mode.")              
+
     parser.add_argument("--num_train_epochs",
                         default=1.0,
                         type=float,
