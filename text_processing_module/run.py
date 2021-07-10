@@ -1,6 +1,6 @@
 # coding=utf-8
 from main import main
-import args
+from BertBasic import args
 
 
 if __name__ == "__main__":

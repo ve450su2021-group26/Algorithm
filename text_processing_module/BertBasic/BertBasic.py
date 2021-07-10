@@ -6,10 +6,10 @@ import torch
 from torch import nn
 from torch.nn import CrossEntropyLoss
 
-class BertOrigin(BertPreTrainedModel):
+class BertBasic(BertPreTrainedModel):
 
     def __init__(self, config, num_labels):
-        super(BertOrigin, self).__init__(config)
+        super(BertBasic, self).__init__(config)
         self.num_labels = num_labels
         self.bert = BertModel(config)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
