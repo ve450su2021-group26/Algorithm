@@ -8,9 +8,9 @@ def get_args(data_dir, output_dir, cache_dir, bert_vocab_file, bert_model_dir, l
 
     parser = argparse.ArgumentParser(description='BERT Baseline')
 
-    parser.add_argument("--model_name", default="BertOrigin", type=str, help="the name of model")
+    parser.add_argument("--model_name", default="BertBasic", type=str, help="the name of model")
 
-    parser.add_argument("--save_name", default="BertOrigin",type=str, help="the name file of model")
+    parser.add_argument("--save_name", default="BertBasic",type=str, help="the name file of model")
 
     # 文件路径：数据目录， 缓存目录
     parser.add_argument("--data_dir",
@@ -19,17 +19,17 @@ def get_args(data_dir, output_dir, cache_dir, bert_vocab_file, bert_model_dir, l
                         help="The input data dir. Should contain the .tsv files (or other data files) for the task.")
     
     parser.add_argument("--output_dir",
-                        default=output_dir + "BertOrigin/",
+                        default=output_dir + "BertBasic/",
                         type=str,
                         help="The output directory where the model predictions and checkpoints will be written.")
 
     parser.add_argument("--cache_dir", 
-                        default=cache_dir + "BertOrigin/",
+                        default=cache_dir + "BertBasic/",
                         type=str,
                         help="缓存目录，主要用于模型缓存")
     
     parser.add_argument("--log_dir",
-                        default=log_dir + "BertOrigin/",
+                        default=log_dir + "BertBasic/",
                         type=str,
                         help="日志目录，主要用于 tensorboard 分析")
 
@@ -78,6 +78,11 @@ def get_args(data_dir, output_dir, cache_dir, bert_vocab_file, bert_model_dir, l
     parser.add_argument("--do_train",
                         action='store_true',
                         help="Whether to run training.")
+
+
+    parser.add_argument("--do_test_verbose",
+                        action='store_true',
+                        help="Whether to run testing in verbose mode.")              
 
     parser.add_argument("--num_train_epochs",
                         default=1.0,

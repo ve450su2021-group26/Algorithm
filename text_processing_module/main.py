@@ -14,9 +14,11 @@ from pytorch_pretrained_bert.modeling import BertConfig, WEIGHTS_NAME, CONFIG_NA
 from pytorch_pretrained_bert.optimization import BertAdam
 
 from BertBasic.BertBasic import BertBasic
+from utils.utils import get_device
+from utils.load_datatsets import load_data
+from train_evalute import train, evaluate_save
 
-
-def main(config, model_times, label_list):
+def main(config, model_times, label_list, label_names):
 
     if not os.path.exists(config.output_dir + model_times):
         os.makedirs(config.output_dir + model_times)
@@ -52,8 +54,9 @@ def main(config, model_times, label_list):
     # Train and dev
     if config.do_train:
 
-        train_dataloader, train_examples_len = load_data(
+        train_dataloader, examples = load_data(
             config.data_dir, tokenizer, config.max_seq_length, config.train_batch_size, "train", label_list)
+        train_examples_len = len(examples)
         dev_dataloader, _ = load_data(
             config.data_dir, tokenizer, config.max_seq_length, config.dev_batch_size, "dev", label_list)
         
@@ -97,9 +100,12 @@ def main(config, model_times, label_list):
     """ Test """
 
     # test 数据
-    test_dataloader, _ = load_data(
-        config.data_dir, tokenizer, config.max_seq_length, config.test_batch_size, "test", label_list)
-
+    if config.do_test_verbose:
+        test_dataloader, examples = load_data(
+            config.data_dir, tokenizer, config.max_seq_length, config.test_batch_size, "test_verbose", label_list)
+    else:
+        test_dataloader, examples = load_data(
+            config.data_dir, tokenizer, config.max_seq_length, config.test_batch_size, "test", label_list)
     # 加载模型 
     bert_config = BertConfig(output_config_file)
 
@@ -116,6 +122,8 @@ def main(config, model_times, label_list):
     # test the model
     test_loss, test_acc, test_report, test_auc, all_idx, all_labels, all_preds = evaluate_save(
         model, test_dataloader, criterion, device, label_list)
+    
+
     print("-------------- Test -------------")
     print(f'\t  Loss: {test_loss: .3f} | Acc: {test_acc*100: .3f} % | AUC:{test_auc}')
 
@@ -127,3 +135,11 @@ def main(config, model_times, label_list):
     for label in print_list:
         print('\t {}: Precision: {} | recall: {} | f1 score: {}'.format(
             label, test_report[label]['precision'], test_report[label]['recall'], test_report[label]['f1-score']))
+
+    if config.do_test_verbose:
+        index_range = min(len(all_labels), 10)
+        index_list = [random.randint(0, len(all_labels)-1) for i in range(index_range)]
+        for index in index_list:
+            print("====================")
+            print("CORRECT CLASS: {}, PREDICTED CLASS: {}".format(label_names[all_labels[index]], label_names[all_preds[index]]))
+            print("SENTENCE INPUT: {}".format(examples[index].text_a))
