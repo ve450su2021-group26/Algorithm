@@ -9,7 +9,11 @@ IMAGENET_STD = [0.229, 0.224, 0.225]
 
 
 class imageInferenceModel():
-    def __init__(self, resize_size, weight_path, device):
+    def __init__(
+            self,
+            resize_size,
+            device,
+            weight_path='./img_module/weights/efficientnet/weight.pth.tar'):
         self.transform = transforms.Compose([
             transforms.Resize((resize_size, resize_size)),
             transforms.ToTensor(),
