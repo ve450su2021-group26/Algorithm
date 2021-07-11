@@ -73,9 +73,9 @@ def get_hbs(args):
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
     transform_MPL = TransformMPL(args, mean=IMAGENET_MEAN, std=IMAGENET_STD)
-    labeled_dataset = HBSLabeled('/home/amax/Algorithm/MPL-pytorch/HBSLabeled')
+    labeled_dataset = HBSLabeled('/home/bz/Algorithm/MPL-pytorch/HBSLabeled')
     train_unlabeled_dataset = HBSUnlabeled(
-        '/home/amax/Algorithm/MPL-pytorch/HBSUnlabeled', transform_MPL)
+        '/home/bz/Algorithm/MPL-pytorch/HBSUnlabeled', transform_MPL)
     len_labled = len(labeled_dataset)
     del labeled_dataset
     len_train_labeled = int(len_labled * 0.925)
@@ -85,9 +85,9 @@ def get_hbs(args):
     val_labeled_idxs = idx[len_train_labeled:]
 
     train_labeled_dataset = HBSLabeled(
-        '/home/amax/Algorithm/MPL-pytorch/HBSLabeled', train_labeled_idxs,
+        '/home/bz/Algorithm/MPL-pytorch/HBSLabeled', train_labeled_idxs,
         transform_labeled)
-    test_dataset = HBSLabeled('/home/amax/Algorithm/MPL-pytorch/HBSLabeled',
+    test_dataset = HBSLabeled('/home/bz/Algorithm/MPL-pytorch/HBSLabeled',
                               val_labeled_idxs, transform_val)
 
     return train_labeled_dataset, train_unlabeled_dataset, test_dataset

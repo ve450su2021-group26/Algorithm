@@ -281,7 +281,8 @@ def train_loop(args, labeled_loader, unlabeled_loader, test_loader,
             soft_pseudo_label = torch.softmax(t_logits_uw.detach() /
                                               args.temperature,
                                               dim=-1)
-            max_probs, hard_pseudo_label = torch.max(soft_pseudo_label, dim=-1)
+            max_probs, hard_pseudo_label = torch.max(soft_pseudo_label.data,
+                                                     dim=-1)
             mask = max_probs.ge(args.threshold).float()
             t_loss_u = torch.mean(
                 -(soft_pseudo_label *
@@ -736,12 +737,12 @@ def main():
             teacher_model,
             device_ids=[args.local_rank],
             output_device=args.local_rank,
-            find_unused_parameters=True)
+            find_unused_parameters=False)
         student_model = nn.parallel.DistributedDataParallel(
             student_model,
             device_ids=[args.local_rank],
             output_device=args.local_rank,
-            find_unused_parameters=True)
+            find_unused_parameters=False)
 
     if args.finetune:
         del t_scaler, t_scheduler, t_optimizer, teacher_model, unlabeled_loader
