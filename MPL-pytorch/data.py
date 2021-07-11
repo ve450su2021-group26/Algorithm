@@ -5,11 +5,11 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 from pathlib2 import Path
+from torch._C import Size
 
 from torch.utils.data import Dataset
 from torchvision import datasets
 from torchvision import transforms
-from torchvision.transforms.transforms import Resize
 
 from augmentation import RandAugment
 
@@ -68,7 +68,7 @@ class HBSUnlabeled(Dataset):
 
 def get_hbs(args):
     transform_labeled = transforms.Compose([
-        transforms.Resize((196, 196)),
+        transforms.Resize((int(args.resize * 1.5), int(args.resize * 1.5))),
         transforms.RandomHorizontalFlip(),
         transforms.RandomCrop(size=args.resize,
                               padding=int(args.resize * 0.125),
@@ -77,7 +77,7 @@ def get_hbs(args):
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
     transform_val = transforms.Compose([
-        transforms.Resize(args.resize),
+        transforms.Resize((args.resize, args.resize)),
         transforms.ToTensor(),
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
@@ -237,16 +237,18 @@ class TransformMPL(object):
             n, m = 2, 10  # default
 
         self.ori = transforms.Compose([
-            transforms.Resize((196, 196)),
+            transforms.Resize(
+                (int(args.resize * 1.5), int(args.resize * 1.5))),
             transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(size=args.resize,
+            transforms.RandomCrop(size=(args.resize, args.resize),
                                   padding=int(args.resize * 0.125),
                                   padding_mode='reflect')
         ])
         self.aug = transforms.Compose([
-            transforms.Resize((196, 196)),
+            transforms.Resize(
+                (int(args.resize * 1.5), int(args.resize * 1.5))),
             transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(size=args.resize,
+            transforms.RandomCrop(size=(args.resize, args.resize),
                                   padding=int(args.resize * 0.125),
                                   padding_mode='reflect'),
             RandAugment(n=n, m=m)
