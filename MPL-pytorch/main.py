@@ -36,9 +36,9 @@ parser.add_argument('--save-path',
                     type=str,
                     help='save path')
 parser.add_argument('--dataset',
-                    default='cifar10',
+                    default='hbs',
                     type=str,
-                    choices=['cifar10', 'cifar100', 'hbs'],
+                    choices=['hbs'],
                     help='dataset name')
 parser.add_argument("--expand-labels",
                     action="store_true",
@@ -57,7 +57,7 @@ parser.add_argument('--start-step',
                     help='manual epoch number (useful on restarts)')
 parser.add_argument('--workers', default=4, type=int, help='number of workers')
 parser.add_argument('--num-classes',
-                    default=10,
+                    default=9,
                     type=int,
                     help='number of classes')
 parser.add_argument('--resize', default=156, type=int, help='resize image')
@@ -616,22 +616,12 @@ def main():
 
     teacher_model = timm.create_model('efficientnet_b0',
                                       pretrained=True,
-                                      num_classes=args.num_classes)
+                                      num_classes=args.num_classes,
+                                      drop_rate=args.teacher_dropout)
     student_model = timm.create_model('efficientnet_b0',
                                       pretrained=True,
-                                      num_classes=args.num_classes)
-    """
-    teacher_model = WideResNet(num_classes=args.num_classes,
-                               depth=depth,
-                               widen_factor=widen_factor,
-                               dropout=0,
-                               dense_dropout=args.teacher_dropout)
-    student_model = WideResNet(num_classes=args.num_classes,
-                               depth=depth,
-                               widen_factor=widen_factor,
-                               dropout=0,
-                               dense_dropout=args.student_dropout)
-    """
+                                      num_classes=args.num_classes,
+                                      drop_rate=args.student_dropout)
 
     if args.local_rank == 0:
         torch.distributed.barrier()
