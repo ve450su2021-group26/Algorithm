@@ -25,10 +25,10 @@ class imageInferenceModel():
         self.net.load_state_dict(torch.load(weight_path))
         self.device = device
 
-    def predict(self, image):
+    def predict(self, image, top_k=3):
         # image is a PIL image
         with torch.no_grad():
             img = self.transform(image).to(self.device)
             img = rearrange(img, 'c h w -> () c h w')
-            label = torch.argmax(self.net(img))
-        return label.item()
+            label = self.net(img).topk(top_k)[1][0].cpu().numpy().tolist()
+        return label

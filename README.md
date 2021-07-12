@@ -1,13 +1,29 @@
 # Usage
 ## Image Module
+* predcition
 ```python
 from img_module.inference_model import imageInferenceModel
-
-# the device for you want to run the model
+from PIL import Image
+# the device which the model will run on it
 device = 'cuda'
 model = imageInferenceModel(224, device=device)
 # img is PIL Image format
 model.predict(img)
+```
+* saliency object detection
+```python
+from img_module.saliency import SaliencyObjDetecter
+from PIL import Image
+from img_module.utils.img_preprocess import tensor_to_cv2
+# the device which the model will run on it
+device = 'cuda'
+detecter = SaliencyObjDetecter(device=device)
+
+front,back = detecter.get_front_back_ground(img)
+
+# the frontground and background are cv2 format now
+front = tensor_to_cv2(front)
+back = tensor_to_cv2(back)
 ```
 # Reference
 ## [U^2Net](https://github.com/xuebinqin/U-2-Net/blob/master/README.md)
