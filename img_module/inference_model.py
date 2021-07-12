@@ -21,6 +21,7 @@ class imageInferenceModel():
         ])
         self.net = timm.create_model('efficientnet_b0', num_classes=9)
         self.net.to(device)
+        self.net.eval()
         self.net.load_state_dict(torch.load(weight_path))
         self.device = device
 

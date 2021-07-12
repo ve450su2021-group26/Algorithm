@@ -5,7 +5,7 @@ from img_module.inference_model import imageInferenceModel
 
 # the device for you want to run the model
 device = 'cuda'
-model = imageInferenceModel(156, device=device)
+model = imageInferenceModel(224, device=device)
 # img is PIL Image format
 model.predict(img)
 ```
