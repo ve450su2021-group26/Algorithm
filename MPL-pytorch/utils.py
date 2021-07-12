@@ -53,7 +53,7 @@ def save_checkpoint(args, state, is_best, finetune=False):
         shutil.copyfile(filename, f'{args.save_path}/{args.name}_best.pth.tar')
 
 
-def accuracy(output, target, topk=(1,)):
+def accuracy(output, target, topk=(1, )):
     output = output.to(torch.device('cpu'))
     target = target.to(torch.device('cpu'))
     maxk = max(topk)
@@ -89,7 +89,6 @@ class AverageMeter(object):
     """Computes and stores the average and current value
        Imported from https://github.com/pytorch/examples/blob/master/imagenet/main.py#L247-L262
     """
-
     def __init__(self):
         self.reset()
 
