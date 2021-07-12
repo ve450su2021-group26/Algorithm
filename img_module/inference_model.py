@@ -8,7 +8,7 @@ IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 
 
-class imageInferenceModel():
+class ImageInferenceModel():
     def __init__(
             self,
             resize_size,

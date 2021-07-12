@@ -2,11 +2,11 @@
 ## Image Module
 * predcition
 ```python
-from img_module.inference_model import imageInferenceModel
+from img_module.inference_model import ImageInferenceModel
 from PIL import Image
 # the device which the model will run on it
 device = 'cuda'
-model = imageInferenceModel(224, device=device)
+model = ImageInferenceModel(224, device=device)
 # img is PIL Image format
 model.predict(img)
 ```
