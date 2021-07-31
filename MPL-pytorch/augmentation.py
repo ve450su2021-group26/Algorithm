@@ -18,23 +18,28 @@ logger = logging.getLogger(__name__)
 PARAMETER_MAX = 10
 RESAMPLE_MODE = None
 
-
 def AutoContrast(img, **kwarg):
     return PIL.ImageOps.autocontrast(img)
 
 
 def Brightness(img, v, max_v, bias=0):
     v = _float_parameter(v, max_v) + bias
+    if random.random() > 0.5 and v > 1.0:
+        v -= 1.0
     return PIL.ImageEnhance.Brightness(img).enhance(v)
 
 
 def Color(img, v, max_v, bias=0):
     v = _float_parameter(v, max_v) + bias
+    if random.random() > 0.5 and v > 1.0:
+        v -= 1.0
     return PIL.ImageEnhance.Color(img).enhance(v)
 
 
 def Contrast(img, v, max_v, bias=0):
     v = _float_parameter(v, max_v) + bias
+    if random.random() > 0.5 and v > 1.0:
+        v -= 1.0
     return PIL.ImageEnhance.Contrast(img).enhance(v)
 
 
@@ -88,6 +93,8 @@ def Invert(img, **kwarg):
 
 
 def Posterize(img, v, max_v, bias, **kwarg):
+    if v > 10:
+        v -= 10
     v = _int_parameter(v, max_v) + bias
     return PIL.ImageOps.posterize(img, v)
 
@@ -101,6 +108,8 @@ def Rotate(img, v, max_v, **kwarg):
 
 def Sharpness(img, v, max_v, bias):
     v = _float_parameter(v, max_v) + bias
+    if random.random() > 0.7 and v > 1.0:
+        v = 0.1
     return PIL.ImageEnhance.Sharpness(img).enhance(v)
 
 
@@ -159,6 +168,7 @@ def TranslateXConst(img, v, max_v, **kwarg):
     v = _float_parameter(v, max_v)
     if random.random() > 0.5:
         v = -v
+    print(v)
     return img.transform(img.size, PIL.Image.AFFINE, (1, 0, v, 0, 1, 0),
                          RESAMPLE_MODE)
 
@@ -167,6 +177,7 @@ def TranslateYConst(img, v, max_v, **kwarg):
     v = _float_parameter(v, max_v)
     if random.random() > 0.5:
         v = -v
+    print(v)
     return img.transform(img.size, PIL.Image.AFFINE, (1, 0, 0, 0, 1, v),
                          RESAMPLE_MODE)
 
@@ -182,23 +193,22 @@ def _int_parameter(v, max_v):
 def rand_augment_pool():
     augs = [
         (AutoContrast, None, None),
-        (Brightness, 1.8, 0.1),
-        (Color, 1.8, 0.1),
-        (Contrast, 1.8, 0.1),
+        (Brightness, 1.3, 0.1),
+        (Color, 1, 0.0),
+        (Contrast, 1.2, 0),
         (CutoutConst, 40, None),
-        (Equalize, None, None),
-        (Invert, None, None),
-        (Posterize, 4, 0),
+         #(Equalize, None, None),
+         #(Invert, None, None),
+        (Posterize, 5, 0),
         (Rotate, 30, None),
-        (Sharpness, 1.8, 0.1),
+        (Sharpness, 4.5, 0.1),
         (ShearX, 0.3, None),
         (ShearY, 0.3, None),
-        (Solarize, 256, None),
+         #(Solarize, 256, None),
         (TranslateXConst, 100, None),
         (TranslateYConst, 100, None),
     ]
     return augs
-
 
 class RandAugment(object):
     def __init__(self, n, m, resample_mode=PIL.Image.BILINEAR):
