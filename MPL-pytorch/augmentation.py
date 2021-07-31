@@ -168,7 +168,6 @@ def TranslateXConst(img, v, max_v, **kwarg):
     v = _float_parameter(v, max_v)
     if random.random() > 0.5:
         v = -v
-    print(v)
     return img.transform(img.size, PIL.Image.AFFINE, (1, 0, v, 0, 1, 0),
                          RESAMPLE_MODE)
 
@@ -177,7 +176,6 @@ def TranslateYConst(img, v, max_v, **kwarg):
     v = _float_parameter(v, max_v)
     if random.random() > 0.5:
         v = -v
-    print(v)
     return img.transform(img.size, PIL.Image.AFFINE, (1, 0, 0, 0, 1, v),
                          RESAMPLE_MODE)
 
