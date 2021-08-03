@@ -17,7 +17,7 @@ class InferenceModel():
         img_labels = self.img_model.predict(img)
         if text is not None:
             text_labels = self.text_model.predict(text)
-            return [*img_labels[0:2], text_labels[2]]
+            return [*img_labels[0:2], text_labels]
         else:
             return img_labels
 
