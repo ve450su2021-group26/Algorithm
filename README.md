@@ -1,11 +1,17 @@
 # Usage
+## Whole Model
+```python
+from inference_model import InferenceModel
+model = InferenceModel()
+# img is PIL Image format
+model.predict(img,'description text')
+```
 ## Image Module
-* predcition
+* predcition 
 ```python
 from img_module.inference_model import ImageInferenceModel
 from PIL import Image
-# the device which the model will run on it
-device = 'cuda'
+
 model = ImageInferenceModel(224, device=device)
 # img is PIL Image format
 model.predict(img)
@@ -15,8 +21,7 @@ model.predict(img)
 from img_module.saliency import SaliencyObjDetecter
 from PIL import Image
 from img_module.utils.img_preprocess import tensor_to_cv2
-# the device which the model will run on it
-device = 'cuda'
+
 detecter = SaliencyObjDetecter(device=device)
 
 front,back = detecter.get_front_back_ground(img)
