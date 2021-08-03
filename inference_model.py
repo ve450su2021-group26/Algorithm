@@ -9,7 +9,9 @@ BUCKET_URL = 'http://ve450poster-1306380978.cos.ap-shanghai.myqcloud.com'
 
 
 class InferenceModel():
-    def __init__(self, device='cuda'):
+    def __init__(self, device=None):
+        if device is None:
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.img_model = ImageInferenceModel(224, device=device)
         self.text_model = TextInferenceModel(device=device)
 
@@ -23,7 +25,9 @@ class InferenceModel():
 
 
 class BackendInferenceModel(InferenceModel):
-    def __init__(self, device='cuda'):
+    def __init__(self, device=None):
+        if device is None:
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
         super(BackendInferenceModel, self).__init__(device=device)
 
     def predict_from_raw(self, json_data):

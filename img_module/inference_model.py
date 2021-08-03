@@ -12,18 +12,20 @@ class ImageInferenceModel():
     def __init__(
             self,
             resize_size,
-            device,
+            device=None,
             weight_path='./img_module/weights/efficientnet/weight.pth.tar'):
         self.transform = transforms.Compose([
             transforms.Resize((resize_size, resize_size)),
             transforms.ToTensor(),
             transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
         ])
+        if device is None:
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.device = device
         self.net = timm.create_model('efficientnet_b0', num_classes=9)
         self.net.to(device)
         self.net.eval()
-        self.net.load_state_dict(torch.load(weight_path))
-        self.device = device
+        self.net.load_state_dict(torch.load(weight_path, map_location=device))
 
     def predict(self, image, top_k=3):
         # image is a PIL image
